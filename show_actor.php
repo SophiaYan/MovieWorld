@@ -47,7 +47,7 @@
   	</div>
 </nav>
 
-<form method="POST" action="http://localhost:1438/~cs143/show_actor.php">
+<form method="GET" action="http://localhost:1438/~cs143/show_actor.php">
 	<div class="container-fluid" style="margin-left: 20px">
 		<div class="page-header">
 		  	<h3>Show Actor Section</h3>
@@ -56,14 +56,14 @@
 		  	<label for="usr">Actor Name:</label>
 		  	<input type="text" class="form-control" id="actor_name" name="actor_name" style="width: 400px" maxlength="100">
 		</div>
-		<button type="button" class="btn btn-default">Show Actors</button>
+		<button type="submit" class="btn btn-default">Show Actors</button>
 	</div>
 </form>
 
 <?php
-$actor_name = $_POST["actor_name"];
-echo $actor_name;
-echo "Hello world";
+// search actor
+$actor_name = $_GET["actor_name"];
+
 if($actor_name) {
 
 	$db_connection = mysql_connect("localhost", "cs143", "");
@@ -75,35 +75,117 @@ if($actor_name) {
 
 	mysql_select_db("CS143", $db_connection);
 
-	echo "hey \" world";
-	$query = "select * from Actor where last =\'" . "\' or first = \'" . "\';";
-	echo $query;
-	$query_to_issue = mysql_real_escape_string($query);
-	echo $query_to_issue;
+	$query = "select * from Actor where last = \"" . mysql_real_escape_string($actor_name) . "\" or first = \"" . mysql_real_escape_string($actor_name) . "\";";
 
-	$rs = mysql_query($query_to_issue, $db_connection);
+	$rs = mysql_query($query, $db_connection);
 	if ($rs) {
 		$column_num = mysql_num_fields($rs);
-		
-		echo "<h3> Result from MySQL: </h3>";
-		echo "<table border=\"1\" cellspacing=\"1\" cellpadding=\"2\">";
+		echo "<div class=\"container-fluid\" style=\"margin-left: 20px\">";
+		echo "<h3>Search Actor Results</h3>";
+		echo "<table class=\"table table-striped\">";
+		echo "<thead> <tr>";
 		for ($i = 0; $i < $column_num; $i++) {
 			$column_name = mysql_field_name($rs, $i);
-			echo "<td> $column_name </td>";
+			echo "<th> $column_name </th>";
 		}
-
+		echo "</tr> </thead>";
+		echo "<tbody>";
 		while($row = mysql_fetch_row($rs)) {
 			echo "<tr>";
 			for ($i = 0; $i < $column_num; $i++) {
-				echo "<td> $row[$i] </td>";
+				echo "<td> <a href=\"show_actor.php?aid=" . $row[0] . "\"> $row[$i] </a></td>";
 			}
 			echo "</tr>";
 		}
-		echo "</table>";
+		echo "</tbody> </table> </div>";
 
 	} else {
-		echo "There is no matched record in our database. ";
+		echo "<div class=\"container-fluid\" style=\"margin-left: 20px\">";
+		echo "<h3> There is no matched record in our database. <h3>";
+		echo "</div>";
 	}
+	mysql_close($db_connection);
+}
+
+// search actor related movie
+$id = $_GET["aid"];
+if ($id) {
+
+	$db_connection = mysql_connect("localhost", "cs143", "");
+	if(!$db_connection) {
+		$errmsg = mysql_error($db_connection);
+		print "Connection failed: '$errmsg' <br />";
+		exit(1);
+	}
+
+	mysql_select_db("CS143", $db_connection);
+
+	$query_find_actor = "select * from Actor where id = " . mysql_real_escape_string($id) . ";";
+
+	$result_actors = mysql_query($query_find_actor, $db_connection);
+	if ($result_actors) {
+		$column_num = mysql_num_fields($result_actors);
+		echo "<div class=\"container-fluid\" style=\"margin-left: 20px\">";
+		echo "<h3>Actor Basic Info</h3>";
+		echo "<table class=\"table table-striped\">";
+		echo "<thead> <tr>";
+		for ($i = 0; $i < $column_num; $i++) {
+			$column_name = mysql_field_name($result_actors, $i);
+			echo "<th> $column_name </th>";
+		}
+		echo "</tr> </thead>";
+		echo "<tbody>";
+		$row = mysql_fetch_row($result_actors);
+		echo "<tr>";
+		for ($i = 0; $i < $column_num; $i++) {
+			echo "<td> $row[$i] </td>";
+		}
+		echo "</tr>";
+		echo "</tbody> </table> </div>";
+
+	} else {
+		echo "<div class=\"container-fluid\" style=\"margin-left: 20px\">";
+		echo "<h3> There is no matched record in our database. <h3>";
+		echo "</div>";
+	}
+
+
+	$query_find_movie = "select m.id, m.title, m.year, m.rating, m.company, ma.role 
+							from MovieActor as ma inner join Movie as m 
+							on ma.mid = m.id
+							where ma.aid = " . $id . ";";
+
+	$result_movies = mysql_query($query_find_movie, $db_connection);
+	if ($result_movies) {
+		$column_num = mysql_num_fields($result_movies);
+		echo "<div class=\"container-fluid\" style=\"margin-left: 20px\">";
+		echo "<h3>Related Movies</h3>";
+		echo "<table class=\"table table-striped\">";
+		echo "<thead> <tr>";
+		for ($i = 1; $i < $column_num; $i++) {
+			$column_name = mysql_field_name($result_movies, $i);
+			echo "<th> $column_name </th>";
+		}
+		echo "</tr> </thead>";
+		echo "<tbody>";
+		while($row = mysql_fetch_row($result_movies)) {
+			echo "<tr>";
+			for ($i = 1; $i < $column_num; $i++) {
+				if ($i == 1) {
+					echo "<td> <a href=\"show_movie.php?mid=" . $row[0] . "\"> $row[$i] </a></td>";
+				} else {
+					echo "<td> $row[$i] </td>";
+				}
+			}
+			echo "</tr>";
+		}
+		echo "</tbody> </table> </div>";
+	} else {
+		echo "<div class=\"container-fluid\" style=\"margin-left: 20px\">";
+		echo "<h3> No movies found for this actor / actress <h3>";
+		echo "</div>";
+	}
+
 	mysql_close($db_connection);
 
 }
