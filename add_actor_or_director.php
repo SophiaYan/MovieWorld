@@ -28,6 +28,7 @@ div.alert {position: fixed; bottom: 0; right: 0; width: 300px;}
 		        <ul class="dropdown-menu">
 			        <li><a href="add_actor_or_director.php">Add actor/director</a></li>
 			        <li><a href="add_movie_info.php">Add Movie Info</a></li>
+			        <li><a href="add_movie_review.php">Add Movie Review</a></li>
 			        <li><a href="add_movie_actor_relation.php">Add Movie/Actor Relation</a></li>
 			        <li><a href="add_movie_director_relation.php">Add Movie/Director Relation</a></li>
 		        </ul>

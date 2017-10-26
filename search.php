@@ -24,6 +24,7 @@
 		        <ul class="dropdown-menu">
 			        <li><a href="add_actor_or_director.php">Add actor/director</a></li>
 			        <li><a href="add_movie_info.php">Add Movie Info</a></li>
+			        <li><a href="add_movie_review.php">Add Movie Review</a></li>
 			        <li><a href="add_movie_actor_relation.php">Add Movie/Actor Relation</a></li>
 			        <li><a href="add_movie_director_relation.php">Add Movie/Director Relation</a></li>
 		        </ul>
@@ -48,35 +49,24 @@
 </nav>
 
 
-<form method="POST" action="http://localhost:1438/~cs143/add_movie_info.php">
+<form method="GET" action="search.php">
 	<div class="container-fluid" style="margin-left: 20px">
 		<div class="page-header">
 		  	<h3>Search Section</h3>
 		</div>
 		<div class="form-group">
 		  	<label for="usr">Any keyword in Actor or Movie:</label>
-		  	<input type="text" class="form-control" id="last_name" style="width: 400px" maxlength="100">
+		  	<input type="text" class="form-control" id="keyword" name="keyword" style="width: 400px" maxlength="100">
 		</div>
-		<button type="button" class="btn btn-default">Show Actors</button>
+		<button type="submit" class="btn btn-default">Show Result!</button>
 	</div>
 </form>
 
 
-<h1> Welcome to the Movie world </h1>
-<p> Please enter your mysql query in the following place and press the submit button </p>
-<p>
-Example: <tt>SELECT * FROM Actor WHERE id=10;</tt><br>
-</p>
-
-<FORM METHOD = "POST" ACTION = "http://localhost:1438/~cs143/query.php">
-<TEXTAREA NAME="query" ROWS=5 COLS=50> </TEXTAREA><br>
-<INPUT TYPE="submit" VALUE="submit_button">
-</FORM>
-
-
 <?php
-$query = $_POST["query"];
-if($query) {
+$keyword = $_GET["keyword"];
+
+if($keyword) {
 
 	$db_connection = mysql_connect("localhost", "cs143", "");
 	if(!$db_connection) {
@@ -84,33 +74,48 @@ if($query) {
 		print "Connection failed: '$errmsg' <br />";
 		exit(1);
 	}
-
 	mysql_select_db("CS143", $db_connection);
-	$query_to_issue = mysql_real_escape_string($query);
 
-	$rs = mysql_query($query_to_issue, $db_connection);
-	if ($rs) {
-		$column_num = mysql_num_fields($rs);
-		
-		echo "<h3> Result from MySQL: </h3>";
-		echo "<table border=\"1\" cellspacing=\"1\" cellpadding=\"2\">";
+	$exploded_keyword = explode(" ", $keyword);
+
+	$query_actor = "select * from Actor where ";
+	if (count($exploded_keyword) == 1) {
+		$query_actor = $query_actor . "first = \"" . $keyword . "\" or last = \"" . $keyword . "\";";
+	} else {
+		$query_actor = 
+			$query_actor . "first = \"" . $exploded_keyword[0] . "\" and last = \"" . $exploded_keyword[1]. "\";";
+	}
+
+	$result_actors = mysql_query($query_actor, $db_connection);
+	$result_actors_num = mysql_num_rows($result_actors);
+	if ($result_actors and $result_actors_num != 0) {
+		$column_num = mysql_num_fields($result_actors);
+		echo "<div class=\"container-fluid\" style=\"margin-left: 20px\">";
+		echo "<h3>Related Actors</h3>";
+		echo "<table class=\"table table-striped\">";
+		echo "<thead> <tr>";
 		for ($i = 0; $i < $column_num; $i++) {
-			$column_name = mysql_field_name($rs, $i);
-			echo "<td> $column_name </td>";
+			$column_name = mysql_field_name($result_actors, $i);
+			echo "<th> $column_name </th>";
 		}
-
-		while($row = mysql_fetch_row($rs)) {
-			echo "<tr>";
-			for ($i = 0; $i < $column_num; $i++) {
-				echo "<td> $row[$i] </td>";
-			}
-			echo "</tr>";
+		echo "</tr> </thead>";
+		echo "<tbody>";
+		$row = mysql_fetch_row($result_actors);
+		echo "<tr>";
+		for ($i = 0; $i < $column_num; $i++) {
+			echo "<td> <a href=\"show_actor.php?aid=" . $row[0] . "\"> $row[$i] </a></td>";
 		}
-		echo "</table>";
+		echo "</tr>";
+		echo "</tbody> </table> </div>";
 
 	} else {
-		echo "There is no matched record in our database. ";
+		echo "<div class=\"container-fluid\" style=\"margin-left: 20px\">";
+		echo "<h3> There is no matched record in our database. <h3>";
+		echo "</div>";
 	}
+
+	
+
 	mysql_close($db_connection);
 
 }

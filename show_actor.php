@@ -24,6 +24,7 @@
 		        <ul class="dropdown-menu">
 			        <li><a href="add_actor_or_director.php">Add actor/director</a></li>
 			        <li><a href="add_movie_info.php">Add Movie Info</a></li>
+			        <li><a href="add_movie_review.php">Add Movie Review</a></li>
 			        <li><a href="add_movie_actor_relation.php">Add Movie/Actor Relation</a></li>
 			        <li><a href="add_movie_director_relation.php">Add Movie/Director Relation</a></li>
 		        </ul>
@@ -47,7 +48,7 @@
   	</div>
 </nav>
 
-<form method="GET" action="http://localhost:1438/~cs143/show_actor.php">
+<form method="GET" action="show_actor.php">
 	<div class="container-fluid" style="margin-left: 20px">
 		<div class="page-header">
 		  	<h3>Show Actor Section</h3>

@@ -48,7 +48,7 @@
   	</div>
 </nav>
 
-<form method="GET" action="http://localhost:1438/~cs143/show_movie.php">
+<form method="GET" action="show_movie.php">
 	<div class="container-fluid" style="margin-left: 20px">
 		<div class="page-header">
 		  	<h3>Show Movie Section</h3>
@@ -78,13 +78,12 @@ if($movie_name) {
 
 	mysql_select_db("CS143", $db_connection);
 
-	// $query = "select * from Movie where title like = \"%" . mysql_real_escape_string($movie_name) . "%\";";
-	$query = "select * from Movie where title = \"Unconditional Love\";";
-	echo $query;
+	$query = "select * from Movie where title like \"%" . mysql_real_escape_string($movie_name) . "%\";";
 
 	$rs = mysql_query($query, $db_connection);
-	echo $rs;
-	if ($rs) {
+	$rs_num = mysql_num_rows($rs);
+	
+	if ($rs and $rs_num != 0) {
 		$column_num = mysql_num_fields($rs);
 		echo "<div class=\"container-fluid\" style=\"margin-left: 20px\">";
 		echo "<h3>Search Movie Results</h3>";
