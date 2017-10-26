@@ -9,7 +9,7 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   <style>
 	div.alert {position: fixed; bottom: 0; right: 0; width: 300px;}
-	</style>
+  </style>
 </head>
 
 <body>
@@ -202,7 +202,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 	if(!$db_connection){
 		die('Could not connect: '.mysql_error());
 	}
-	mysql_select_db("TEST", $db_connection);
+	mysql_select_db("CS143", $db_connection);
 	$max_movie_id_query = "SELECT id FROM MaxMovieID";
 	$query_result = mysql_query($max_movie_id_query, $db_connection);
 	$old_max_movie_id = mysql_fetch_assoc($query_result)["id"];

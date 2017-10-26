@@ -158,7 +158,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 	if(!$db_connection){
 		die('Could not connect: '.mysql_error());
 	}
-	mysql_select_db("TEST", $db_connection);
+	mysql_select_db("CS143", $db_connection);
 	$max_person_id_query = "SELECT id FROM MaxPersonID";
 	$query_result = mysql_query($max_person_id_query, $db_connection);
 	$old_max_person_id = mysql_fetch_assoc($query_result)["id"];
