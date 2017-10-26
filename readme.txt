@@ -1,0 +1,1 @@
+This project is a practice for php and mysql programming. PHP is used for the front end and database connection. Database is mysql database.
