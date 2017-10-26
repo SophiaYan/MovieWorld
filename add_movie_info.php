@@ -7,6 +7,9 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <style>
+	div.alert {position: fixed; bottom: 0; right: 0; width: 300px;}
+	</style>
 </head>
 
 <body>
@@ -47,23 +50,23 @@
   	</div>
 </nav>
 
-<form method="POST" action="http://localhost:1438/~cs143/add_movie_info.php">
+<form method="POST" action="add_movie_info.php">
 	<div class="container-fluid" style="margin-left: 20px">
 		<div class="page-header">
 		  	<h3>Add Movie Section</h3>
 		</div>
 		<div class="form-group">
-		  	<label for="usr">Title:</label>
-		  	<input type="text" class="form-control" id="last_name" style="width: 400px" maxlength="100">
+		  	<label>Title:</label>
+		  	<input type="text" class="form-control" name="title" style="width: 400px" maxlength="100">
 		</div>
 		<div class="form-group">
-		  	<label for="usr">Year:</label>
-			<input class="form-control" id="date" name="year" placeholder="YYYY" type="text" style="width: 400px"/><br>
+		  	<label>Year:</label>
+			<input class="form-control" name="year" placeholder="YYYY" type="text" style="width: 400px"/><br>
 		</div>
 
 		<div class="form-group">
 		  <label for="rating">MPAA rating:</label>
-		  <select class="form-control" id="rating" style="width: 400px">
+		  <select class="form-control" name="rating" style="width: 400px">
 		    <option>PG-13</option>
 		    <option>R</option>
 		    <option>PG</option>
@@ -74,69 +77,159 @@
 		</div>
 
 		<div class="form-group">
-		  	<label for="usr">Company:</label>
-		  	<input type="text" class="form-control" id="last_name" style="width: 400px" maxlength="50">
+		  	<label>Company:</label>
+		  	<input type="text" class="form-control" name="company" style="width: 400px" maxlength="50">
 		</div>
-		<button type="button" class="btn btn-default">Add Movie</button>
+
+		<div class="form-group">
+			<label>Genre:</label>
+		  <form>
+		    <div class="checkbox-inline">
+		      <label><input type="checkbox" name="genre[]" value="Action">Action</label>
+		    </div>
+		    <div class="checkbox-inline">
+		      <label><input type="checkbox" name="genre[]" value="Adult">Adult</label>
+		    </div>
+			<div class="checkbox-inline">
+		      <label><input type="checkbox" name="genre[]" value="Adventure">Adventure</label>
+		    </div>
+		    <div class="checkbox-inline">
+		      <label><input type="checkbox" name="genre[]" value="Animation">Animation</label>
+		    </div>
+		    <div class="checkbox-inline">
+		      <label><input type="checkbox" name="genre[]" value="Comedy">Comedy</label>
+		    </div>
+		    <div class="checkbox-inline">
+		      <label><input type="checkbox" name="genre[]" value="Crime">Crime</label>
+		    </div>
+		    <div class="checkbox-inline">
+		      <label><input type="checkbox" name="genre[]" value="Documentary">Documentary</label>
+		    </div>
+		    <div class="checkbox-inline">
+		      <label><input type="checkbox" name="genre[]" value="Drama">Drama</label>
+		    </div>
+		    <div class="checkbox-inline">
+		      <label><input type="checkbox" name="genre[]" value="Family">Family</label>
+		    </div>
+		    <div class="checkbox-inline">
+		      <label><input type="checkbox" name="genre[]" value="Fantasy">Fantasy</label>
+		    </div>
+		    <div class="checkbox-inline">
+		      <label><input type="checkbox" name="genre[]" value="Horror">Horror</label>
+		    </div>
+		    <div class="checkbox-inline">
+		      <label><input type="checkbox" name="genre[]" value="Musical">Musical</label>
+		    </div>
+		    <div class="checkbox-inline">
+		      <label><input type="checkbox" name="genre[]" value="Mystery">Mystery</label>
+		    </div>
+		    <div class="checkbox-inline">
+		      <label><input type="checkbox" name="genre[]" value="Romance">Romance</label>
+		    </div>
+		    <div class="checkbox-inline">
+		      <label><input type="checkbox" name="genre[]" value="Sci-Fi">Sci-Fi</label>
+		    </div>
+		    <div class="checkbox-inline">
+		      <label><input type="checkbox" name="genre[]" value="Short">Short</label>
+		    </div>
+		    <div class="checkbox-inline">
+		      <label><input type="checkbox" name="genre[]" value="Thriller">Thriller</label>
+		    </div>
+		    <div class="checkbox-inline">
+		      <label><input type="checkbox" name="genre[]" value="War">War</label>
+		    </div>
+		    <div class="checkbox-inline">
+		      <label><input type="checkbox" name="genre[]" value="Western">Western</label>
+		    </div>
+		  </form>
+		</div>
+
+		<button type="submit" class="btn btn-default">Add Movie</button>
 	</div>
 </form>
 
 
-
-<h1> Welcome to the Movie world </h1>
-<p> Please enter your mysql query in the following place and press the submit button </p>
-<p>
-Example: <tt>SELECT * FROM Actor WHERE id=10;</tt><br>
-</p>
-
-<FORM METHOD = "POST" ACTION = "http://localhost:1438/~cs143/query.php">
-<TEXTAREA NAME="query" ROWS=5 COLS=50> </TEXTAREA><br>
-<INPUT TYPE="submit" VALUE="submit_button">
-</FORM>
-
-
 <?php
+if($_SERVER['REQUEST_METHOD'] == 'POST'){
+	$title = $_POST["title"];
+	$year = $_POST["year"];
+	$rating = $_POST["rating"];
+	$company = $_POST["company"];
+	$genre_list = $_POST["genre"];
 
-$date = DateTime::createFromFormat("d-m-Y", $_POST['date'])->format('Y-m-d');
+	$empty_field = array();
+	if($title == null){
+		array_push($empty_field, "Title");
+	}
 
-$query = $_POST["query"];
-if($query) {
+	if($year == null) {
+		array_push($empty_field, "Year");
+	}
+
+	if($company == null) {
+		array_push($empty_field, "Company");
+	}
+
+	if($genre_list == null) {
+		array_push($empty_field, "Genre");
+	}
+
+	if(sizeof($empty_field) > 0){
+		$empty_field_list;
+		foreach ($empty_field as $key => $value) {
+			$empty_field_list.= $value." is empty <br>";
+		}
+		echo "<div class=\"alert alert-danger\" role=\"alert\"> 
+		<button type=\"button\" class=\"close\" data-dismiss=\"alert\"
+		aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button>
+		<strong>Invalid Input!<br></strong>".$empty_field_list."
+		</div>";
+		exit;
+	}
+
+	if(!is_numeric($year) || ((int)$year != (float)$year)){
+		echo "<div class=\"alert alert-danger\" role=\"alert\"> 
+		<button type=\"button\" class=\"close\" data-dismiss=\"alert\"
+		aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button>
+		<strong>Invalid value for Year!</strong></div>";
+		exit;
+	}
+
+	$year = (int)$year;
 
 	$db_connection = mysql_connect("localhost", "cs143", "");
-	if(!$db_connection) {
-		$errmsg = mysql_error($db_connection);
-		print "Connection failed: '$errmsg' <br />";
-		exit(1);
+	if(!$db_connection){
+		die('Could not connect: '.mysql_error());
 	}
+	mysql_select_db("TEST", $db_connection);
+	$max_movie_id_query = "SELECT id FROM MaxMovieID";
+	$query_result = mysql_query($max_movie_id_query, $db_connection);
+	$old_max_movie_id = mysql_fetch_assoc($query_result)["id"];
+	$new_max_movie_id = $old_max_movie_id + 1;
 
-	mysql_select_db("CS143", $db_connection);
-	$query_to_issue = mysql_real_escape_string($query);
+	$db_query = sprintf("INSERT INTO Movie VALUES(".$new_max_movie_id.", '%s', %s, '%s', '%s')", mysql_real_escape_string($title),
+	 mysql_real_escape_string($year), mysql_real_escape_string($rating), mysql_real_escape_string($company));
 
-	$rs = mysql_query($query_to_issue, $db_connection);
-	if ($rs) {
-		$column_num = mysql_num_fields($rs);
-		
-		echo "<h3> Result from MySQL: </h3>";
-		echo "<table border=\"1\" cellspacing=\"1\" cellpadding=\"2\">";
-		for ($i = 0; $i < $column_num; $i++) {
-			$column_name = mysql_field_name($rs, $i);
-			echo "<td> $column_name </td>";
+	if(mysql_query($db_query, $db_connection)){
+		echo "<div class=\"alert alert-success\" role=\"alert\"> 
+		<button type=\"button\" class=\"close\" data-dismiss=\"alert\"
+		aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button>
+		<strong>New record inserted successfully</strong></div>";
+		$update_MaxMovieID = "UPDATE MaxMovieID SET id=".$new_max_movie_id." where id=".$old_max_movie_id;
+		mysql_query($update_MaxMovieID, $db_connection);
+
+		foreach($genre_list as $genre){
+			$insert_genre_query = sprintf("INSERT INTO MovieGenre VALUES(%s, '%s')", $new_max_movie_id, mysql_real_escape_string($genre));
+			mysql_query($insert_genre_query, $db_connection);
 		}
 
-		while($row = mysql_fetch_row($rs)) {
-			echo "<tr>";
-			for ($i = 0; $i < $column_num; $i++) {
-				echo "<td> $row[$i] </td>";
-			}
-			echo "</tr>";
-		}
-		echo "</table>";
-
-	} else {
-		echo "There is no matched record in our database. ";
+	}else{
+		echo "<div class=\"alert alert-danger\" role=\"alert\"> 
+		<button type=\"button\" class=\"close\" data-dismiss=\"alert\"
+		aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button>
+		<strong>New record insertion failed</strong></div>";
 	}
 	mysql_close($db_connection);
-
 }
 ?>
 
