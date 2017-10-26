@@ -7,6 +7,10 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<style>
+div.alert {position: fixed; bottom: 0; right: 0; width: 300px;}
+</style>
+
 </head>
 
 <body>
@@ -47,139 +51,140 @@
   	</div>
 </nav>
 
-<form method="POST" action="http://localhost:1438/~cs143/add_actor_or_director.php">
+<form method="POST" action="add_actor_or_director.php">
 	<div class="container-fluid" style="margin-left: 20px">
 		<div class="page-header">
 		  	<h3>Add Actor Section</h3>
 		</div>
 
 		<div class="form-group">
-		  	<label for="usr">Last Name:</label>
-		  	<input type="text" class="form-control" id="last_name" style="width: 400px">
+		  	<label>Last Name:</label>
+		  	<input type="text" class="form-control" id="last_name" name="last_name" style="width: 400px">
 		</div>
 		<div class="form-group">
-		  	<label for="pwd">First Name:</label>
-		  	<input type="text" class="form-control" id="first_name" style="width: 400px">
+		  	<label>First Name:</label>
+		  	<input type="text" class="form-control" id="first_name" name="first_name" style="width: 400px">
 		</div>
 		
 		<label> Sex: </label><br>
-		<label class="radio-inline"><input type="radio" name="female">Female</label>
-		<label class="radio-inline"><input type="radio" name="male">Male</label><br><br>
+		<label class="radio-inline"><input type="radio" name="sex" value="Female" checked>Female</label>
+		<label class="radio-inline"><input type="radio" name="sex" value="Male">Male</label><br><br>
 		
 		<label> Date of Birth: </label><br>
-		<div class="row">
-	    	<div class='col-sm-3'>
-	        	<div class="form-group">
-	            	<div class='input-group date' id='date'>
-	                	<input type='text' class="form-control" />
-	                	<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
-	                	</span>
-	            	</div>
-	            </div>
-	        </div>
-	    </div>
+		<input class="form-control" id="date" name="dob" placeholder="YYYY-MM-DD" type="text" style="width: 400px"/><br>
 		
 		<label> Date of Death: (leave blank if not apply) </label><br>
-		<input class="form-control" id="date" name="date" placeholder="MM/DD/YYYY" type="text" style="width: 400px"/><br>
-		<button type="button" class="btn btn-default">Add Actor</button>
-
-		<input type="hidden" name="action" value="actor">
+		<input class="form-control" id="date" name="dod" placeholder="YYYY-MM-DD" type="text" style="width: 400px"/><br>
+		<button type="submit" class="btn btn-default" name="table_name" value="Actor">Add Actor</button>
 	</div>
 </form>
 
 
-
-<form method="POST" action="http://localhost:1438/~cs143/add_actor_or_director.php">
+<form method="POST" action="add_actor_or_director.php">
 	<div class="container-fluid" style="margin-left: 20px">
 		<div class="page-header">
 		  	<h3>Add Director Section</h3>
 		</div>
 		<div class="form-group">
-		  	<label for="usr">Last Name:</label>
-		  	<input type="text" class="form-control" id="last_name" style="width: 400px">
+		  	<label>Last Name:</label>
+		  	<input type="text" class="form-control" id="last_name" name="last_name" style="width: 400px">
 		</div>
 		<div class="form-group">
-		  	<label for="pwd">First Name:</label>
-		  	<input type="text" class="form-control" id="first_name" style="width: 400px">
+		  	<label>First Name:</label>
+		  	<input type="text" class="form-control" id="first_name" name="first_name" style="width: 400px">
 		</div>
 		
 		<label> Date of Birth: </label><br>
-		<div class="row">
-	    	<div class='col-sm-3'>
-	        	<div class="form-group">
-	            	<div class='input-group date' id='date'>
-	                	<input type='text' class="form-control" />
-	                	<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
-	                	</span>
-	            	</div>
-	            </div>
-	        </div>
-	    </div>
+		<input class="form-control" id="date" name="dob" placeholder="YYYY-MM-DD" type="text" style="width: 400px"/><br>
 		
 		<label> Date of Death: (leave blank if not apply) </label><br>
-		<input class="form-control" id="date" name="date" placeholder="MM/DD/YYYY" type="text" style="width: 400px"/><br>
-		<button type="button" class="btn btn-default">Add Director</button>
-
-		<input type="hidden" name="action" value="director">
+		<input class="form-control" id="date" name="dod" placeholder="YYYY-MM-DD" type="text" style="width: 400px"/><br>
+		<button type="submit" class="btn btn-default" name="table_name" value="Director">Add Director</button>
 	</div>
 </form>
 
 
-
-<h1> Welcome to the Movie world </h1>
-<p> Please enter your mysql query in the following place and press the submit button </p>
-<p>
-Example: <tt>SELECT * FROM Actor WHERE id=10;</tt><br>
-</p>
-
-<FORM METHOD = "POST" ACTION = "http://localhost:1438/~cs143/query.php">
-<TEXTAREA NAME="query" ROWS=5 COLS=50> </TEXTAREA><br>
-<INPUT TYPE="submit" VALUE="submit_button">
-</FORM>
-
-
 <?php
 
-$date = DateTime::createFromFormat("d-m-Y", $_POST['date'])->format('Y-m-d');
+if($_SERVER['REQUEST_METHOD'] == 'POST'){
+	$table_name = $_POST["table_name"];
+	$first_name = $_POST["first_name"];
+	$last_name = $_POST["last_name"];
+	$gender = $_POST["sex"];
+	$dob = $_POST["dob"];
+	$dod = $_POST["dod"];
 
-$query = $_POST["query"];
-if($query) {
+	$empty_field = array();
+	if($first_name == null){
+		array_push($empty_field, "First Name");
+	}
+
+	if($last_name == null) {
+		array_push($empty_field, "Last Name");
+	}
+
+	if($dob == null) {
+		array_push($empty_field, "Date of Birth");
+	}
+
+	if(sizeof($empty_field) > 0){
+		$empty_field_list;
+		foreach ($empty_field as $key => $value) {
+			$empty_field_list.= $value." is empty <br>";
+		}
+		echo "<div class=\"alert alert-danger\" role=\"alert\"> 
+		<button type=\"button\" class=\"close\" data-dismiss=\"alert\"
+		aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button>
+		<strong>Invalid Input!<br></strong>".$empty_field_list."
+		</div>";
+		exit;
+	}
+
+	function validateDate($date, $format="Y-m-d"){
+		$d = date_create_from_format($format, $date);
+		return $d && $d->format('Y-m-d') == $date;
+	}
+
+	if(!validateDate($dob) || ($dod!=NULL &&!validateDate($dod))) {
+		echo "<div class=\"alert alert-danger\" role=\"alert\"> 
+		<button type=\"button\" class=\"close\" data-dismiss=\"alert\"
+		aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button>
+		<strong>Date formating issue</strong></div>";
+		exit;
+	}
 
 	$db_connection = mysql_connect("localhost", "cs143", "");
-	if(!$db_connection) {
-		$errmsg = mysql_error($db_connection);
-		print "Connection failed: '$errmsg' <br />";
-		exit(1);
+	if(!$db_connection){
+		die('Could not connect: '.mysql_error());
 	}
+	mysql_select_db("TEST", $db_connection);
+	$max_person_id_query = "SELECT id FROM MaxPersonID";
+	$query_result = mysql_query($max_person_id_query, $db_connection);
+	$old_max_person_id = mysql_fetch_assoc($query_result)["id"];
+	$new_max_person_id = $old_max_person_id + 1;
 
-	mysql_select_db("CS143", $db_connection);
-	$query_to_issue = mysql_real_escape_string($query);
+	if($table_name==='Actor'){
+		$db_query = sprintf("INSERT INTO Actor VALUES(".$new_max_person_id.", '%s', '%s', '%s', '%s', ", mysql_real_escape_string($last_name), mysql_real_escape_string($first_name), mysql_real_escape_string($gender), $dob);
+	}else{
+		$db_query = sprintf("INSERT INTO Director VALUES(".$new_max_person_id.", '%s', '%s', '%s', ", mysql_real_escape_string($last_name), mysql_real_escape_string($first_name), $dob);
+	}
+	if($dod != null) {$db_query = $db_query."'".mysql_real_escape_string($dod)."');";}
+	else {$db_query.="NULL);";}
 
-	$rs = mysql_query($query_to_issue, $db_connection);
-	if ($rs) {
-		$column_num = mysql_num_fields($rs);
-		
-		echo "<h3> Result from MySQL: </h3>";
-		echo "<table border=\"1\" cellspacing=\"1\" cellpadding=\"2\">";
-		for ($i = 0; $i < $column_num; $i++) {
-			$column_name = mysql_field_name($rs, $i);
-			echo "<td> $column_name </td>";
-		}
-
-		while($row = mysql_fetch_row($rs)) {
-			echo "<tr>";
-			for ($i = 0; $i < $column_num; $i++) {
-				echo "<td> $row[$i] </td>";
-			}
-			echo "</tr>";
-		}
-		echo "</table>";
-
-	} else {
-		echo "There is no matched record in our database. ";
+	if(mysql_query($db_query, $db_connection)){
+		echo "<div class=\"alert alert-success\" role=\"alert\"> 
+		<button type=\"button\" class=\"close\" data-dismiss=\"alert\"
+		aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button>
+		<strong>New record inserted successfully</strong></div>";
+		$update_MaxPersonID = "UPDATE MaxPersonID SET id=".$new_max_person_id." where id=".$old_max_person_id;
+		mysql_query($update_MaxPersonID, $db_connection);
+	}else{
+		echo "<div class=\"alert alert-danger\" role=\"alert\"> 
+		<button type=\"button\" class=\"close\" data-dismiss=\"alert\"
+		aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button>
+		<strong>New record insertion failed</strong></div>";
 	}
 	mysql_close($db_connection);
-
 }
 ?>
 
