@@ -76,7 +76,17 @@ if($actor_name) {
 
 	mysql_select_db("CS143", $db_connection);
 
-	$query = "select * from Actor where last = \"" . mysql_real_escape_string($actor_name) . "\" or first = \"" . mysql_real_escape_string($actor_name) . "\";";
+	$exploded_keyword = explode(" ", $keyword);
+
+	$exploded_actor_name = explode(" ", $actor_name);
+
+	$query = "select * from Actor where ";
+	if (count($exploded_actor_name) == 1) {
+		$query = $query . "first = \"" . $keyword . "\" or last = \"" . $keyword . "\";";
+	} else {
+		$query = 
+			$query . "first = \"" . $exploded_actor_name[0] . "\" and last = \"" . $exploded_actor_name[1]. "\";";
+	}
 
 	$rs = mysql_query($query, $db_connection);
 	if ($rs) {

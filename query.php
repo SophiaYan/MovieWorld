@@ -7,6 +7,15 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <style type="text/css">
+  	body { 
+    	background: url("background.jpg") no-repeat fixed center; 
+	}
+	.title {
+		text-align: center;
+		margin-top: 20%;
+	}
+  </style>
 </head>
 
 <body>
@@ -48,60 +57,7 @@
   	</div>
 </nav>
 
-
-<h1> Welcome to the Movie world </h1>
-<p> Please enter your mysql query in the following place and press the submit button </p>
-<p>
-Example: <tt>SELECT * FROM Actor WHERE id=10;</tt><br>
-</p>
-
-<FORM METHOD = "POST" ACTION = "http://localhost:1438/~cs143/query.php">
-<TEXTAREA NAME="query" ROWS=5 COLS=50> </TEXTAREA><br>
-<INPUT TYPE="submit" VALUE="submit_button">
-</FORM>
-
-
-<?php
-$query = $_POST["query"];
-if($query) {
-
-	$db_connection = mysql_connect("localhost", "cs143", "");
-	if(!$db_connection) {
-		$errmsg = mysql_error($db_connection);
-		print "Connection failed: '$errmsg' <br />";
-		exit(1);
-	}
-
-	mysql_select_db("CS143", $db_connection);
-	$query_to_issue = mysql_real_escape_string($query);
-
-	$rs = mysql_query($query_to_issue, $db_connection);
-	if ($rs) {
-		$column_num = mysql_num_fields($rs);
-		
-		echo "<h3> Result from MySQL: </h3>";
-		echo "<table border=\"1\" cellspacing=\"1\" cellpadding=\"2\">";
-		for ($i = 0; $i < $column_num; $i++) {
-			$column_name = mysql_field_name($rs, $i);
-			echo "<td> $column_name </td>";
-		}
-
-		while($row = mysql_fetch_row($rs)) {
-			echo "<tr>";
-			for ($i = 0; $i < $column_num; $i++) {
-				echo "<td> $row[$i] </td>";
-			}
-			echo "</tr>";
-		}
-		echo "</table>";
-
-	} else {
-		echo "There is no matched record in our database. ";
-	}
-	mysql_close($db_connection);
-
-}
-?>
+<h1 class="title"> Welcome to the Movie World ! </h1>
 
 </body>
 </html>

@@ -110,14 +110,54 @@ if($keyword) {
 
 	} else {
 		echo "<div class=\"container-fluid\" style=\"margin-left: 20px\">";
-		echo "<h3> There is no matched record in our database. <h3>";
+		echo "<h4> There is no matched actor in our database. <h4>";
 		echo "</div>";
 	}
 
-	
+	// query movie
+	$query_movie = "select * from Movie where title like \"%" . $exploded_keyword[0] . "%\"";
+	if (count($exploded_keyword) > 1) {
+		for ($i = 1; $i < count($exploded_keyword); $i++) {
+			$query_movie = $query_movie . " or title like \"%" . $exploded_keyword[$i] . "%\""; 
+		}
+	}
+	$query_movie = $query_movie . ";";	
+
+	$result_movies = mysql_query($query_movie, $db_connection);
+	$result_movies_num = mysql_num_rows($result_movies);
+	if ($result_movies and $result_movies_num != 0) {
+		$column_num = mysql_num_fields($result_movies);
+		echo "<div class=\"container-fluid\" style=\"margin-left: 20px\">";
+		echo "<h3>Related Movies</h3>";
+		echo "<table class=\"table table-striped\">";
+		echo "<thead> <tr>";
+		for ($i = 0; $i < $column_num; $i++) {
+			$column_name = mysql_field_name($result_movies, $i);
+			echo "<th> $column_name </th>";
+		}
+		echo "</tr> </thead>";
+		echo "<tbody>";
+		$row = mysql_fetch_row($result_movies);
+		while($row = mysql_fetch_row($result_movies)) {
+			echo "<tr>";
+			for ($i = 1; $i < $column_num; $i++) {
+				if ($i == 1) {
+					echo "<td> <a href=\"show_movie.php?mid=" . $row[0] . "\"> $row[$i] </a></td>";
+				} else {
+					echo "<td> $row[$i] </td>";
+				}
+			}
+			echo "</tr>";
+		}
+		echo "</tbody> </table> </div>";
+
+	} else {
+		echo "<div class=\"container-fluid\" style=\"margin-left: 20px\">";
+		echo "<h4> There is no matched movie in our database. <h4>";
+		echo "</div>";
+	}
 
 	mysql_close($db_connection);
-
 }
 ?>
 
