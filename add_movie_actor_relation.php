@@ -51,7 +51,7 @@
   	</div>
 </nav>
 
-<form method="POST" action="add_movie_actor_relation.php">
+<form method="GET" action="add_movie_actor_relation.php">
 	<div class="container-fluid" style="margin-left: 20px">
 		<div class="page-header">
 		  	<h3>Add Movie Actor Relation Section</h3>
@@ -83,11 +83,11 @@
 
 
 <?php
-if($_SERVER['REQUEST_METHOD'] == 'POST'){
-	$movie = $_POST["movie"];
-	$actor_first = $_POST["actor_first"];
-	$actor_last = $_POST["actor_last"];
-	$role = $_POST["role"];
+if(count($_GET) != 0){
+	$movie = $_GET["movie"];
+	$actor_first = $_GET["actor_first"];
+	$actor_last = $_GET["actor_last"];
+	$role = $_GET["role"];
 
 	$empty_field = array();
 	if($movie == null){

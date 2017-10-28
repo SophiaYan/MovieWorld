@@ -51,7 +51,7 @@
   	</div>
 </nav>
 
-<form method="POST" action="add_movie_info.php">
+<form method="GET" action="add_movie_info.php">
 	<div class="container-fluid" style="margin-left: 20px">
 		<div class="page-header">
 		  	<h3>Add Movie Section</h3>
@@ -151,12 +151,12 @@
 
 
 <?php
-if($_SERVER['REQUEST_METHOD'] == 'POST'){
-	$title = $_POST["title"];
-	$year = $_POST["year"];
-	$rating = $_POST["rating"];
-	$company = $_POST["company"];
-	$genre_list = $_POST["genre"];
+if(count($_GET) != 0){
+	$title = $_GET["title"];
+	$year = $_GET["year"];
+	$rating = $_GET["rating"];
+	$company = $_GET["company"];
+	$genre_list = $_GET["genre"];
 
 	$empty_field = array();
 	if($title == null){

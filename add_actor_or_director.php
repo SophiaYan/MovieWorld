@@ -52,7 +52,7 @@ div.alert {position: fixed; bottom: 0; right: 0; width: 300px;}
   	</div>
 </nav>
 
-<form method="POST" action="add_actor_or_director.php">
+<form method="GET" action="add_actor_or_director.php">
 	<div class="container-fluid" style="margin-left: 20px">
 		<div class="page-header">
 		  	<h3>Add Actor Section</h3>
@@ -81,7 +81,7 @@ div.alert {position: fixed; bottom: 0; right: 0; width: 300px;}
 </form>
 
 
-<form method="POST" action="add_actor_or_director.php">
+<form method="GET" action="add_actor_or_director.php">
 	<div class="container-fluid" style="margin-left: 20px">
 		<div class="page-header">
 		  	<h3>Add Director Section</h3>
@@ -107,13 +107,13 @@ div.alert {position: fixed; bottom: 0; right: 0; width: 300px;}
 
 <?php
 
-if($_SERVER['REQUEST_METHOD'] == 'POST'){
-	$table_name = $_POST["table_name"];
-	$first_name = $_POST["first_name"];
-	$last_name = $_POST["last_name"];
-	$gender = $_POST["sex"];
-	$dob = $_POST["dob"];
-	$dod = $_POST["dod"];
+if(count($_GET) != 0){
+	$table_name = $_GET["table_name"];
+	$first_name = $_GET["first_name"];
+	$last_name = $_GET["last_name"];
+	$gender = $_GET["sex"];
+	$dob = $_GET["dob"];
+	$dod = $_GET["dod"];
 
 	$empty_field = array();
 	if($first_name == null){

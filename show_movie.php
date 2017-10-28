@@ -109,6 +109,7 @@ if($movie_name) {
 		echo "<h3> There is no matched record in our database. <h3>";
 		echo "</div>";
 	}
+
 	mysql_close($db_connection);
 }
 
@@ -132,28 +133,91 @@ if ($id) {
 		$column_num = mysql_num_fields($result_movies);
 		echo "<div class=\"container-fluid\" style=\"margin-left: 20px\">";
 		echo "<h3>Movie Basic Info</h3>";
+	
+		$row = mysql_fetch_assoc($result_movies);
+		$movie_title = $row["title"];
+		echo "<strong>Title: $movie_title<br>";
+		$year = $row["year"];
+		echo "Year: $year<br>";
+		$mpaa_rating = $row["rating"];
+		echo "MPAA Rating: $mpaa_rating <br>";
+		$company = $row["company"];
+		echo "Company: $company<br></strong>";
+
+		$director_query = "SELECT first, last FROM MovieDirector, Director WHERE mid=".$id." AND did=id";
+		$director_query_result = mysql_query($director_query, $db_connection);
+		if(mysql_num_rows($director_query_result) > 0){
+			echo "<strong>Director:<br> </strong>";
+			while ($row = mysql_fetch_row($director_query_result)){
+				echo "$row[0] $row[1]<br>";
+			}
+		}
+
+		$genre_query = "SELECT genre FROM MovieGenre WHERE mid=".$id;
+		$genre_query_result = mysql_query($genre_query, $db_connection);
+		if(mysql_num_rows($genre_query_result)>0){
+			echo "<strong>Genre:</strong><br>";
+			while($row = mysql_fetch_row($genre_query_result)){
+				echo "$row[0]<br>";
+			}
+		}
+
+		echo "</div>";
+
+		$web_rating_query = "select * from MovieRating where mid = ".$id.";";
+		$web_rating_result = mysql_query($web_rating_query, $db_connection);
+
+		echo "<div class=\"container-fluid\" style=\"margin-left: 20px\">";
+		echo "<h3> Website Ratings</h3>";
 		echo "<table class=\"table table-striped\">";
-		echo "<thead> <tr>";
-		for ($i = 0; $i < $column_num; $i++) {
-			$column_name = mysql_field_name($result_movies, $i);
-			echo "<th> $column_name </th>";
-		}
-		echo "</tr> </thead>";
+		echo "<thead><tr> <th>IMDB</th> <th>Rotten Tomatoes</th></tr></thead>";
 		echo "<tbody>";
-		$row = mysql_fetch_row($result_movies);
-		echo "<tr>";
-		for ($i = 0; $i < $column_num; $i++) {
-			echo "<td> $row[$i] </td>";
+		if(mysql_num_rows($web_rating_result) > 0){
+			$web_rating_row = mysql_fetch_assoc($web_rating_result);
+			$imdb = $web_rating_row["imdb"];
+			$rot = $web_rating_row["rot"];
+			echo "<tr><td> $imdb </td> <td> $rot </td> </tr>";
+
+		}else {
+			echo "<tr><td> NaN </td> <td> NaN </td> </tr>";
 		}
-		echo "</tr>";
-		echo "</tbody> </table> </div>";
+		echo "</tbody>";
+		echo "</table></div>";
+
+		$reviewer_rating_query = "select * from Review where mid =".$id.";";
+		$reviewer_rating_result = mysql_query($reviewer_rating_query, $db_connection);
+
+		if(mysql_num_rows($reviewer_rating_result) > 0){
+			echo "<div class=\"container-fluid\" style=\"margin-left: 20px\">";
+			echo "<h3> Reviewer Ratings</h3>";
+			echo "<table class=\"table table-striped\">";
+			echo "<thead><tr> <th>Reviewer</th> <th>Time</th><th>Rating</th><th>Comment</th></tr></thead>";
+			echo "<tbody>";
+			while($row = mysql_fetch_assoc($reviewer_rating_result)){
+				echo "<tr>";
+				$reviewer_name = $row["name"];
+				$time = $row["time"];
+				$rating = $row["rating"];
+				$comment = $row["comment"];
+				echo "<tr><td>$reviewer_name</td><td>$time</td><td>$rating</td><td>$comment</td></tr>";
+				echo "</tr>";
+			}
+
+			echo "</tbody>";
+			echo "</table></div>";
+			
+			$average_rating_query = "SELECT AVG(rating) AS average_rating FROM Review WHERE mid = ".$id.";";
+			$average_rating_result = mysql_query($average_rating_query, $db_connection);
+			$average_rating = mysql_fetch_assoc($average_rating_result)["average_rating"];
+			echo "<div class=\"container-fluid\" style=\"margin-left: 20px\">
+				<h4>Average Ratings: $average_rating </h4></div>";
+		}
 
 	} else {
 		echo "<div class=\"container-fluid\" style=\"margin-left: 20px\">";
 		echo "<h3> There is no matched record in our database. <h3>";
 		echo "</div>";
 	}
-
 
 	$query_find_movie = "select a.id, CONCAT(a.first, ' ', a.last) as Actor_Name, ma.role 
 							from MovieActor as ma inner join Actor as a 

@@ -80,11 +80,12 @@ if($keyword) {
 
 	$query_actor = "select * from Actor where ";
 	if (count($exploded_keyword) == 1) {
-		$query_actor = $query_actor . "first = \"" . $keyword . "\" or last = \"" . $keyword . "\";";
+		$query_actor = $query_actor . "first like \"%" . $keyword . "%\" or last like \"%" . $keyword . "%\";";
 	} else {
 		$query_actor = 
 			$query_actor . "first = \"" . $exploded_keyword[0] . "\" and last = \"" . $exploded_keyword[1]. "\";";
 	}
+
 
 	$result_actors = mysql_query($query_actor, $db_connection);
 	$result_actors_num = mysql_num_rows($result_actors);
@@ -100,12 +101,14 @@ if($keyword) {
 		}
 		echo "</tr> </thead>";
 		echo "<tbody>";
-		$row = mysql_fetch_row($result_actors);
-		echo "<tr>";
-		for ($i = 0; $i < $column_num; $i++) {
-			echo "<td> <a href=\"show_actor.php?aid=" . $row[0] . "\"> $row[$i] </a></td>";
+
+		while($row = mysql_fetch_row($result_actors)){
+			echo "<tr>";
+			for ($i = 0; $i < $column_num; $i++) {
+				echo "<td> <a href=\"show_actor.php?aid=" . $row[0] . "\"> $row[$i] </a></td>";
+			}
+			echo "</tr>";
 		}
-		echo "</tr>";
 		echo "</tbody> </table> </div>";
 
 	} else {
@@ -137,7 +140,6 @@ if($keyword) {
 		}
 		echo "</tr> </thead>";
 		echo "<tbody>";
-		$row = mysql_fetch_row($result_movies);
 		while($row = mysql_fetch_row($result_movies)) {
 			echo "<tr>";
 			for ($i = 1; $i < $column_num; $i++) {
