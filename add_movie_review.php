@@ -73,7 +73,7 @@
 		  	<label>Comment:</label><br>
 			<TEXTAREA NAME="comment" ROWS=10 COLS=70></TEXTAREA>
 		</div>
-		<button type="submit" class="btn btn-default">Add Movie</button>
+		<button type="submit" class="btn btn-default">Add Movie Review!</button>
 	</div>
 </form>
 
